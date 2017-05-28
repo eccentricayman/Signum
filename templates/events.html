@@ -42,15 +42,57 @@
 			<div class="six columns joinedevents">
 				<h2>Joined Events</h2>
 				{% for event in joinedEvents %}
-					
+					<div class="event">
+						<a href="http://signumsystems.tech/event/{{event['id']}}">{{event['name']}}</a>
+						<i style="float: right" class="fa fa-trash-o"></i>
+						<br>
+						<i class="fa fa-map-marker"></i><p>{{event['location']}}</p>
+						<br>
+						<i class="fa fa-calendar"></i><p>{{event['date']}}</p>
+					</div>
 				{% endfor %}
+				<a onclick="showJoinEvent()">Join Event</a>
 			</div>
 			<div class="six columns myevents">
 				<h2>My Events</h2>
 				{% for event in createdEvents %}
-					
+					<div class="event">
+						<a href="http://signumsystems.tech/event/{{event['id']}}">{{event['name']}}</a>
+						<a style="float: right" href="http://signumsystems.tech/leave/{{event['id']}}"><i class="fa fa-trash-o"></i></a>
+						<br>
+						<i class="fa fa-map-marker"></i><p>{{event['location']}}</p>
+						<br>
+						<i class="fa fa-calendar"></i><p>{{event['date']}}</p>
+					</div>
 				{% endfor %}
+				<a onclick="showCreateEvent()">Create Event</a>
 			</div>
 		</div>
+		<form id="joinEvent" method="post">
+			<div style="background-color: #E1E1E1 ; padding: 2.5%; width: 50%; height: auto ; margin: 0 auto ; margin-top: 5% ; text-align: center">
+				<h2 style="color: black">Join an Event</h2>
+				<input type="text" name="code" placeholder="Type in Event Code Here" />
+				<br>
+				<input type="submit" name="joinEvent" value="Submit" />
+			</div>
+		</form>
+		<form id="createEvent" method="post">
+			<div style="background-color: #E1E1E1 ; padding: 2.5%; width: 50%; height: auto ; margin: 0 auto ; margin-top: 5%; text-align: center">
+				<h2 style="color: black">Create a New Event</h2>
+				<input type="text" name="code" placeholder="Type in Event Code Here" />
+				<br>
+				<input type="submit" name="createEvent" value="Submit" />
+			</div>
+		</form>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script type="text/javascript">
+		 var showCreateEvent = function() {
+			 $("#createEvent").css("display", "block");
+		 }
+		 var showJoinEvent = function() {
+			 $("#joinEvent").css("display", "block");
+		 }
+		</script>
 	</body>
 </html>

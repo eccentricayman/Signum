@@ -117,9 +117,23 @@ def home():
                     return render_template("setup.html", message = "You should upload an image!")
                 if image and allowed_file(image.filename):
                     manipulation.setupUser(email, name, image, question, answer)
-            #here is events page
+            #create event
+            elif "createEvent" in request.form:
+                name = request.form['name']
+                location = request.form['location']
+                date = request.form['date']
+                image = request.files['image']
+                if image.filename == "":
+                    return render_template("events.html", message = "You should upload an image!")
+                eventID = ""
+                if image and allowed_file(image.filename):
+                    eventID = manipulation.addEvent(name, session['user'], location, date, image)
+                return redirect(url_for("home", message = "Your event has been created! Please share this code: {0}".format(eventID)))
+            #join event
             else:
-                pass
+                code = request.form['code']
+                manipulation.addUserToEvent(code, session['user'])
+                return redirect(url_for("home"))
         #go to login/signup
         else:
             return render_template("index.html")
@@ -211,8 +225,6 @@ def singleEvent(eventid):
             #go to lgin/signup / landing page
         else:
             return render_template("index.html")
-
-
 
 @app.route("/serve")
 def serve():

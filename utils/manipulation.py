@@ -184,6 +184,7 @@ def addEvent(name, creator, location, date, image):
             'users': []
         }
     )
+    return eventID
     
 def getEvent(eventID):
     return events.find_one({ 'id': eventID })

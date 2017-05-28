@@ -21,8 +21,37 @@ h2 {
 	font-size: 20px;
 }
 
-.six.columns {
-	
+.event {
+	padding: 1%;
+	border: 1px solid white;
+	margin: 1%;
+	width: 100%;
+	height: auto;
+	text-align: left;
+}
+
+.event > a, .joinedevents > a, .myevents > a {
+	text-decoration: none;
+	color: white;
+}
+
+.joinedevents > a, .myevents > a {
+	position: absolute;
+	bottom: 5%;
+	left: 20%;
+	padding: 1%;
+	text-align: center;
+	color: #404040;
+	border-radius: 25px;
+	background-color: white;
+}
+
+.joinedevents > a:hover, .myevents > a:hover {
+	cursor: pointer;
+}
+
+.myevents > a {
+	left: 72.5%;
 }
 
 .heading {
@@ -88,4 +117,17 @@ h2 {
 
 #signup {
 	display: none;
+}
+
+#joinEvent, #createEvent {
+	z-index: 999;
+	width: 100vw;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100vh;
+	padding: 0;
+	margin: 0;
+	display: none;
+	background-color: rgba(0, 0, 0, 0.7);
 }
