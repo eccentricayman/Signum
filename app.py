@@ -1,9 +1,10 @@
-import os, sqlite3
+import os
+from pymongo import MongoClient
 from threading import Thread
 from flask import Flask, render_template, redirect, url_for, send_from_directory, request, session
 from flask_mail import Mail, Message
 from werkzeug.utils import secure_filename
-from utils import secrets, accounts, recognition, events
+from utils import secrets, manipulation, recognition
 
 app = Flask(__name__)
 
@@ -23,8 +24,11 @@ app.config['MAIL_DEFAULT_SENDER'] = ("Signum Event Systems", secrets['email'])
 mail = Mail(app)
 
 #database stuff
-cursor = sqlite3.connect("data/data00.db")
-query = "CREATE TABLE IF NOT EXISTS users WITH VALUES ()"
+connection = MongoClient("127.0.0.1")
+db = connection['Signum']
+filesystem = gridfs.GridFS(db)
+users = db['users']
+events = db['events']
 
 #mail functions
 #here is async wrapper for mail
