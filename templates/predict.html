@@ -1,0 +1,10 @@
+{% extends "template.html" %}
+{% block body %}
+<form action="upload_predict" method="post" enctype="multipart/form-data">
+  <input type="file" name="file" id="upload">
+  <label for="upload" id="upload-label">Choose a file...</label>
+  <br>
+  <br>
+  <input type="submit" value="Predict">
+</form>
+{% endblock body %}

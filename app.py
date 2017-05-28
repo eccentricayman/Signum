@@ -12,13 +12,20 @@ secrets = secrets.getSecrets()
 app.secret_key= secrets['session-key']
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
-app.config['MAIL_SERVER'] ='smtp.gmail.com'
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = secrets['email']
 app.config['MAIL_PASSWORD'] = secrets['email-password']
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_DEFAULT_SENDER'] = ("Signum Events", secrets['email'])
+
+app.config['MAIL_DEFAULT_SENDER'] = ("Signum Event Systems", secrets['email'])
+
+# This is the path to the upload directory
+app.config['UPLOAD_FOLDER'] = 'uploads/'
+# These are the extension that we are accepting to be uploaded
+app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg'])
+
 mail = Mail(app)
 
 #database stuff
@@ -109,7 +116,76 @@ def home():
                     manipulation.setupUser(email, name, image, question, answer)
             #here is events page
             else:
-                # joining a event
+                pass
+        #go to login/signup
+        else:
+            return render_template("index.html")
+        
+'''
+# Route that will process the file upload
+@app.route('/upload', methods=['POST'])
+def upload():
+    # Get the name of the uploaded file
+    f = request.files['file']
+    # Check if the file is one of the allowed types/extensions
+    if f and allowed_file(f.filename):
+        # Make the filename safe, remove unsupported chars
+        filename = secure_filename(f.filename)
+        # Move the file form the temporal folder to
+        # the upload folder we setup
+        path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        f.save(path)
+        if recognition.isProperPhoto(path):
+            name = request.form.get("name")
+            recognition.feed_image(path, name)
+
+            # Redirect the user to the uploaded_file route, which
+            # will basicaly show on the browser the uploaded file
+            return redirect(url_for('uploaded_file',
+                            filename=filename))
+        else:
+            return "not a proper photo!!"
+    else:
+        return "bad file!"
+
+# This route is expecting a parameter containing the name
+# of a file. Then it will locate that file on the upload
+# directory and show it on the browser, so if the user uploads
+# an image, that image is going to be show after the upload
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+
+                               filename)
+
+@app.route('/predict')
+def predict():
+    return render_template("predict.html")
+
+# Route that will process the file upload
+@app.route('/upload_predict', methods=['POST'])
+def upload_predict():
+    # Get the name of the uploaded file
+    f = request.files['file']
+    # Check if the file is one of the allowed types/extensions
+    if f and allowed_file(f.filename):
+        # Make the filename safe, remove unsupported chars
+        filename = secure_filename(f.filename)
+        path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        f.save(path)
+        if recognition.isProperPhoto(path):
+            # Move the file form the temporal folder to
+            # the upload folder we setup
+            prediction = recognition.getPrediction(path)
+            os.remove(path)
+            return str(prediction)
+        else:
+            return "not a valid face pic!!!"
+    else:
+        return "bad file!"
+
+#@app.route('/event/<eventid>', methods=['POST'])
+# joining a event
                 if 'join' in request.form:
                     manipulation.addUserToEvent(request.form['join'], session['user'])
                 #creating an event
@@ -139,6 +215,8 @@ def verify(link):
             user['verified'] = True
             return render_template("index.html", message = "Your account has been verified.")
     return render_template("index.html", message = "Invalid verification link.")
+'''
+
 
 @app.route('/event/<eventid>')
 def eventPage(eventid):
@@ -152,6 +230,7 @@ def eventPage(eventid):
     else:
         return redirect(url_for("/"))
 
+    
 @app.route('/leave/<eventid>')
 def leaveEvent(eventid):
     event = manipulation.getEvent(eventid)
@@ -160,6 +239,7 @@ def leaveEvent(eventid):
     else:
         return redirect(url_for("/"))
 
+    
 @app.route("/control/<eventid>")
 def controlEvent(eventid):
     event = manipulation.getEvent(eventid)
