@@ -1,7 +1,7 @@
 import os, gridfs
 from pymongo import MongoClient
 from threading import Thread
-from flask import Flask, render_template, redirect, url_for, send_from_directory, request, session
+from flask import Flask, render_template, redirect, url_for, send_from_directory, request, session, flash
 from flask_mail import Mail, Message
 from werkzeug.utils import secure_filename
 from utils import secrets, manipulation
@@ -124,7 +124,7 @@ def home():
         else:
             return render_template("index.html")
         
-'''
+
 # Route that will process the file upload
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -186,7 +186,8 @@ def upload_predict():
             return "not a valid face pic!!!"
     else:
         return "bad file!"
-'''
+
+    
 @app.route('/event/<eventid>', methods=['GET', 'POST'])
 # joining a event
 def singleEvent(eventid):
@@ -211,6 +212,13 @@ def singleEvent(eventid):
         else:
             return render_template("index.html")
 
+
+
+@app.route("/serve")
+def serve():
+    render_template("serve.html")
+
+    
 @app.route("/verify/<link>", methods=["GET", "POST"])
 def verify(link):
     users = db.users.find({})

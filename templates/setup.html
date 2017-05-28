@@ -1,64 +1,64 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Account Setup</title>
-		        
-        <!-- skeleton css framework  -->
-        <link
-            rel="stylesheet"
-            type="text/css"
-            href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"
-            media="none"
-            onload="if(media!='all')media='all'">
+  <head>
+    <title>Account Setup</title>
+    
+    <!-- skeleton css framework  -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"
+      media="none"
+      onload="if(media!='all')media='all'">
 
-        <!-- font awesome -->
-        <link
-            rel="stylesheet"
-            type="text/css"
-            href="static/font-awesome.min.css"
-            media="none"
-            onload="if(media!='all')media='all'">
+    <!-- font awesome -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="static/font-awesome.min.css"
+      media="none"
+      onload="if(media!='all')media='all'">
 
-        <!-- google fonts -->
-        <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Raleway:300,400,700"
-            media="none"
-            onload="if(media!='all')media='all'">
+    <!-- google fonts -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Raleway:300,400,700"
+      media="none"
+      onload="if(media!='all')media='all'">
 
-        <!-- custom styles -->
-        <link
-            rel="stylesheet"
-            type="text/css"
-            href="static/styles.css"
-            media="none"
-            onload="if(media!='all')media='all'">
-	</head>
-	<body>
-				<div class="heading-container">
-			<h1 class="heading" style="margin-top: 5%;">Welcome to Signum</h1>
-			<p>Event sign-in, face to face</p>
-		</div>
-		<p class="message">{{message}}</p>
-		{% if request.args.get("message") %}
-			<p class="message">{{request.args.get("message")}}</p>
-		{% endif %}
-		<br>
-		<div class="card">
-			<form class="auth" method="post">
-				<br>
-				<input type="text" name="email" placeholder="Email" />
-				<br>
-				<input type="password" name="password" placeholder="Password" />
-				<br><br>
-				<input type="submit" name="register" value="Register" />
-				<br>
-				<input type="submit" name="login" value="Login" />
-			</form>
-		</div>
+    <!-- custom styles -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="static/styles.css"
+      media="none"
+      onload="if(media!='all')media='all'">
+  </head>
+  <body>
+    <div class="heading-container">
+      <h1 class="heading" style="margin-top: 5%;">Welcome to Signum</h1>
+      <p>Event sign-in, face to face</p>
+    </div>
+    <p class="message">{{message}}</p>
+    {% if request.args.get("message") %}
+    <p class="message">{{request.args.get("message")}}</p>
+    {% endif %}
+    <br>
+    <div class="card">
+      <form class="auth" method="post">
+	<br>
+	<input type="text" name="email" placeholder="Email" />
+	<br>
+	<input type="password" name="password" placeholder="Password" />
+	<br><br>
+	<input type="submit" name="register" value="Register" />
+	<br>
+	<input type="submit" name="login" value="Login" />
+      </form>
+    </div>
 
-		<script type="text/javascript">
-		 
-		</script>
-	</body>
+    <script type="text/javascript">
+      
+    </script>
+  </body>
 </html>

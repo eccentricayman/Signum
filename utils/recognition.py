@@ -2,12 +2,20 @@ from clarifai.rest import ClarifaiApp
 from clarifai.rest import Image as CImage
 import secrets
 from pprint import pprint
+from pymongo import MongoClient
+import gridfs
+
+#database                                                 
+connection = MongoClient("127.0.0.1")
+db = connection['Signum']
+filesystem = gridfs.GridFS(db)
+users = db['users']
+events = db['events']
 
 secrets = secrets.getSecrets()
 client_id = secrets['client-id']
 client_secret = secrets['client-secret']
     
-#GITIGNORE THIS BOI
 clar_app = ClarifaiApp(client_id, client_secret)
 
 model = None
