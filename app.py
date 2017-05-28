@@ -4,12 +4,13 @@ from threading import Thread
 from flask import Flask, render_template, redirect, url_for, send_from_directory, request, session
 from flask_mail import Mail, Message
 from werkzeug.utils import secure_filename
-from utils import secrets, manipulation, recognition
+from utils import secrets, manipulation
 
 app = Flask(__name__)
 
 secrets = secrets.getSecrets()
 app.secret_key= secrets['session-key']
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
@@ -17,13 +18,13 @@ app.config['MAIL_USERNAME'] = secrets['email']
 app.config['MAIL_PASSWORD'] = secrets['email-password']
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
+
 app.config['MAIL_DEFAULT_SENDER'] = ("Signum Event Systems", secrets['email'])
 
 # This is the path to the upload directory
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 # These are the extension that we are accepting to be uploaded
 app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg'])
-
 
 mail = Mail(app)
 
@@ -74,7 +75,7 @@ def home():
     if 'user' in session:
         return render_template("events.html", events = manipulation.getUserEvents(session['user']))
     else:
-        if request.form:
+        if request.method == "POST":
             if request.form['submit'] == "login":
                 email = request.form['email']
                 password = request.form['password']
@@ -83,23 +84,43 @@ def home():
                 if check[0]:
                     session['user'] = email
                     #already setup
-                    if getUser(email)['setup']:
+                    if manipulation.getUser(email)['setup']:
                         #go to events
-                        return render_template("events.html", eventsAttending = getUsersEvents(email), eventsCreated = getUserEvents(email))
+                        return render_template("events.html", eventsAttending = manipulation.getUsersEvents(email), eventsCreated = manipulation.getUserEvents(email))
                     #go to setup
                     else:
-                        return render_template("setup.html", user = getUser(email))
+                        return render_template("setup.html", user = manipulation.getUser(email))
                 #go to main with error message
                 else:
                     return render_template("index.html", message = check[1])
             #my dude trynna signup?
+            elif request.form['submit'] == "register":
+                email = request.form['email']
+                password = request.form['password']
+                check = db.users.count({ 'email': email })
+                if check:
+                    return render_template("index.html", message = "An account already exists with that email.")
+                else:
+                    return render_template("index.html", message = "A verification email has been sent to {0}".format(email))
+            #this is for setup
+            elif request.form['submit'] == "setup":
+                email = session['user']
+                name = request.form['name']
+                manipulation.updateUserName(email, name)
+                
+                image = request.files['image']
+                if image.filename == "":
+                    return render_template("setup.html", message = "You should upload an image!")
+                if image and allowed_file(image.filename):
+                    manipulation.addUserImage(email, image, True)
+            #here is events page
             else:
                 pass
         #go to login/signup
         else:
             return render_template("index.html")
         
-
+'''
 # Route that will process the file upload
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -163,8 +184,64 @@ def upload_predict():
         return "bad file!"
 
 #@app.route('/event/<eventid>', methods=['POST'])
+# joining a event
+                if 'join' in request.form:
+                    manipulation.addUserToEvent(request.form['join'], session['user'])
+                #creating an event
+                else:
+                    name = request.form['name']
+                    creator = session['user']
+                    location = request.form['location']
+                    date = request.form['date']
+
+                    image = request.files['image']
+                    if image.filename == "":
+                        return render_template("events.html", message = "You should add an image to showcase your event!")
+
+                    if image and allowed_file(image.filename):
+                        manipulation.addEvent(name, creator, location, date, image)
+                        
+                    return redirect(url_for("/"))
+        #go to lgin/signup / landing page
+        else:
+            return render_template("index.html")
+
+@app.route("/verify/<link>", methods=["POST"])
+def verify(link):
+    users = db.users.find({})
+    for user in users:
+        if user['verificationLink'] == link:
+            user['verified'] = True
+            return render_template("index.html", message = "Your account has been verified.")
+    return render_template("index.html", message = "Invalid verification link.")
+'''
+
+
+@app.route('/event/<eventid>')
 def eventPage(eventid):
-    event = getEvent()
+    event = manipulation.getEvent(eventid)
+    eventImage = manipulation.getEventImage(eventid)
+    if event:
+        if session['user'] == event['creator']:
+            return redirect(url_for("/control/{0}".format(event['id'])))
+        else:
+            return render_template("event.html", event = event, image = eventImage)
+    else:
+        return redirect(url_for("/"))
+
+    
+@app.route('/leave/<eventid>')
+def leaveEvent(eventid):
+    event = manipulation.getEvent(eventid)
+    if event and session['user']:
+        event['users'].remove(session['user'])
+    else:
+        return redirect(url_for("/"))
+
+    
+@app.route("/control/<eventid>")
+def controlEvent(eventid):
+    event = manipulation.getEvent(eventid)
     
 if __name__ == "__main__":
     app.debug = True
