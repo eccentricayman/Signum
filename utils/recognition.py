@@ -1,6 +1,7 @@
 from clarifai.rest import ClarifaiApp
+import secrets
 
-secrets = getSecrets()
+secrets = secrets.getSecrets()
 client_id = secrets['client-id']
 client_secret = secrets['client-secret']
     
