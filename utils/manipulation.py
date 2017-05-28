@@ -199,6 +199,10 @@ def updateEventImage(eventID, image):
     event['image'] = addImage(image)
 
 def removeEvent(eventID):
+    event = getEvent(eventID)
+    user = getUser(event['creator'])
+    user['eventsCreated'].remove(eventID)
+    
     db.events.remove(
         {
             'id': eventID
