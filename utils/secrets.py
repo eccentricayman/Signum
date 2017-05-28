@@ -4,6 +4,8 @@ def getSecrets():
     return {
         'session-key': secretArray[0],
         'email': secretArray[1],
-        'email-password': secretArray[2]
+        'email-password': secretArray[2],
+        'client-id': secretArray[3],
+        'client-secret': secretArray[4]
     }
 
