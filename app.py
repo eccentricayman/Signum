@@ -1,4 +1,4 @@
-import os
+import os, gridfs
 from pymongo import MongoClient
 from threading import Thread
 from flask import Flask, render_template, redirect, url_for, send_from_directory, request, session
@@ -10,9 +10,6 @@ app = Flask(__name__)
 
 secrets = secrets.getSecrets()
 app.secret_key= secrets['session-key']
-
-app.config['UPLOAD_FOLDER'] = "uploads/"
-app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg'])
 
 app.config['MAIL_SERVER'] ='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
@@ -61,50 +58,44 @@ def sendVerificationEmail(email, verificationLink):
     <br><br>
     <a href="{0}" style="padding: 1.5% ; text-decoration: none ; color: #404040; border: 1px solid black ; text-transform: uppercase ; font-weight: 500 ; font-family: Arial ; padding-left: 10% ; padding-right: 10%">Verify Email</a>
 </center>
-    '''.format("http://PUTMUTHAFUKKINTECHDOMAINHERE/verify/" + verificationLink)
+    '''.format("http://127.0.0.1/verify/" + verificationLink)
     sendEmailAsync(app, message)
 
 
 @app.route("/", methods = ["GET", "POST"])
 def home():
     if 'user' in session:
-        return render_template("events.html", events = accounts.getEvents(user))
-#    else:
-#        if 'submit' in request:
-            #replacerino
-        pass
+        return render_template("events.html", events = manipulation.getUserEvents(session['user']))
     else:
-        return render_template("index.html")
+        if request.form:
+            if request.form['submit'] == "login":
+                email = request.form['email']
+                password = request.form['password']
+                check = manipulation.authenticateUser(email, password)
+                
+                if check[0]:
+                    session['user'] = email
+                    #already setup
+                    if getUser(email)['setup']:
+                        #go to events
+                        return render_template("events.html", eventsAttending = getUsersEvents(email), eventsCreated = getUserEvents(email))
+                    #go to setup
+                    else:
+                        return render_template("setup.html", user = getUser(email))
+                #go to main with error message
+                else:
+                    return render_template("index.html", message = check[1])
+            #my dude trynna signup?
+            else:
+                
+        #go to lgin/signup
+        else:
+            return render_template("index.html")
 
-
-# Route that will process the file upload
-@app.route('/upload', methods=['POST'])
-def upload():
-    # Get the name of the uploaded file
-    f = request.files['file']
-    # Check if the file is one of the allowed types/extensions
-    if f and allowed_file(f.filename):
-        # Make the filename safe, remove unsupported chars
-        filename = secure_filename(f.filename)
-        # Move the file form the temporal folder to
-        # the upload folder we setup
-        f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        # Redirect the user to the uploaded_file route, which
-        # will basicaly show on the browser the uploaded file
-        return redirect(url_for('uploaded_file',
-                                filename=filename))
-    else:
-        return "bad file!"
-    
-# This route is expecting a parameter containing the name
-# of a file. Then it will locate that file on the upload
-# directory and show it on the browser, so if the user uploads
-# an image, that image is going to be show after the upload
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'],
-                               filename)
-
+        
+#@app.route('/event/<eventid>', methods=['POST'])
+def eventPage(eventid):
+    event = getEvent()
     
 if __name__ == "__main__":
     app.debug = True

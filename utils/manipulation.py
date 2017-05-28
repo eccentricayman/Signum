@@ -50,6 +50,7 @@ def addUser(email, password):
                 'password': hashlib.sha256(text).hexdigest(),
                 'images': [],
                 'events': [],
+                'eventsCreated': [],
                 'verified': False,
                 'verificationLink': link,
                 'setup': False
@@ -115,7 +116,16 @@ def authenticateUser(email, password):
 def getUser(email):
     return users.find_one({ 'email': email })
 
+#get the events the user created
 def getUserEvents(email):
+    events = getUser(email)['eventsCreated']
+    retEvents = []
+    for event in events:
+        retEvents.append(getEvent(event))
+    return retEvents
+
+#gets the users events attending
+def getUsersEvents(email):
     events = getUser(email)['events']
     retEvents = []
     for event in events:
@@ -146,12 +156,18 @@ def addUserImage(email, image, main):
 #events
 #date is string
 #MM/DD/YYYY
-def addEvent(name, location, date, image):
+def addEvent(name, creator, location, date, image):
     fileID = addImage(image)
+    eventID = getEventID()
+    
+    user = getUser(creator)
+    user['eventsCreated'].append(eventID)
+    
     events.insert(
         {
             'name': name,
-            'id': getEventID(),
+            'creator': creator,
+            'id': eventID,
             'location': location,
             'date': date,
             'image': fileID,
