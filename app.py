@@ -4,7 +4,7 @@ from threading import Thread
 from flask import Flask, render_template, redirect, url_for, send_from_directory, request, session
 from flask_mail import Mail, Message
 from werkzeug.utils import secure_filename
-from utils import secrets, manipulation, recognition
+from utils import secrets, manipulation
 
 app = Flask(__name__)
 
@@ -96,16 +96,36 @@ def home():
                 else:
                     return render_template("index.html", message = "A verification email has been sent to {0}".format(email))
             #this is for setup
-            else:
+            elif request.form['submit'] == "setup":
                 email = session['user']
                 name = request.form['name']
                 manipulation.updateUserName(email, name)
                 
-                image = request.files['file']
+                image = request.files['image']
                 if image.filename == "":
                     return render_template("setup.html", message = "You should upload an image!")
                 if image and allowed_file(image.filename):
                     manipulation.addUserImage(email, image, True)
+            #here is events page
+            else:
+                # joining a event
+                if 'join' in request.form:
+                    manipulation.addUserToEvent(request.form['join'], session['user'])
+                #creating an event
+                else:
+                    name = request.form['name']
+                    creator = session['user']
+                    location = request.form['location']
+                    date = request.form['date']
+
+                    image = request.files['image']
+                    if image.filename == "":
+                        return render_template("events.html", message = "You should add an image to showcase your event!")
+
+                    if image and allowed_file(image.filename):
+                        manipulation.addEvent(name, creator, location, date, image)
+                        
+                    return redirect(url_for("/"))
         #go to lgin/signup / landing page
         else:
             return render_template("index.html")
@@ -119,14 +139,29 @@ def verify(link):
             return render_template("index.html", message = "Your account has been verified.")
     return render_template("index.html", message = "Invalid verification link.")
 
-#@app.route('/event/<eventid>', methods=['POST'])
+@app.route('/event/<eventid>')
 def eventPage(eventid):
-    event = getEvent(eventid)
-    eventImage = getEventID(eventid)
+    event = manipulation.getEvent(eventid)
+    eventImage = manipulation.getEventImage(eventid)
     if event:
-        return render_template("event.html", event = event, image = eventImage)
+        if session['user'] == event['creator']:
+            return redirect(url_for("/control/{0}".format(event['id'])))
+        else:
+            return render_template("event.html", event = event, image = eventImage)
     else:
-        return redirect(url_for("/", message = "Invalid event page."))
+        return redirect(url_for("/"))
+
+@app.route('/leave/<eventid>')
+def leaveEvent(eventid):
+    event = manipulation.getEvent(eventid)
+    if event and session['user']:
+        event['users'].remove(session['user'])
+    else:
+        return redirect(url_for("/"))
+
+@app.route("/control/<eventid>")
+def controlEvent(eventid):
+    event = manipulation.getEvent(eventid)
     
 if __name__ == "__main__":
     app.debug = True
