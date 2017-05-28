@@ -4,7 +4,6 @@ def getSecrets():
     return {
         'session-key': secretArray[0],
         'email': secretArray[1],
-        'email-password': secretArray[2],
-        'clarifai-app-id': secretArray[3],
+        'email-password': secretArray[2]
     }
 
