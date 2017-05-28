@@ -72,11 +72,12 @@ def sendVerificationEmail(email, verificationLink):
 
 @app.route("/", methods = ["GET", "POST"])
 def home():
+    print request.form
     if 'user' in session:
         return render_template("events.html", events = manipulation.getUserEvents(session['user']))
     else:
         if request.method == "POST":
-            if request.form['submit'] == "login":
+            if "login" in request.form:
                 email = request.form['email']
                 password = request.form['password']
                 check = manipulation.authenticateUser(email, password)
@@ -94,16 +95,18 @@ def home():
                 else:
                     return render_template("index.html", message = check[1])
             #my dude trynna signup?
-            elif request.form['submit'] == "register":
+            elif 'register' in request.form:
                 email = request.form['email']
                 password = request.form['password']
                 check = db.users.count({ 'email': email })
                 if check:
                     return render_template("index.html", message = "An account already exists with that email.")
                 else:
+                    link = manipulation.addUser(email, password)
+                    sendVerificationEmail(email, link)
                     return render_template("index.html", message = "A verification email has been sent to {0}".format(email))
             #this is for setup
-            elif request.form['submit'] == "setup":
+            elif "setup" in request.form:
                 email = session['user']
                 name = request.form['name']
                 question = request.form['question']
@@ -183,39 +186,40 @@ def upload_predict():
             return "not a valid face pic!!!"
     else:
         return "bad file!"
-
-#@app.route('/event/<eventid>', methods=['POST'])
+'''
+@app.route('/event/<eventid>', methods=['GET', 'POST'])
 # joining a event
-                if 'join' in request.form:
-                    manipulation.addUserToEvent(request.form['join'], session['user'])
-                #creating an event
-                else:
-                    name = request.form['name']
-                    creator = session['user']
-                    location = request.form['location']
-                    date = request.form['date']
-
-                    image = request.files['image']
-                    if image.filename == "":
-                        return render_template("events.html", message = "You should add an image to showcase your event!")
-
-                    if image and allowed_file(image.filename):
-                        manipulation.addEvent(name, creator, location, date, image)
-                        
-                    return redirect(url_for("/"))
-        #go to lgin/signup / landing page
+def singleEvent(eventid):
+    if 'join' in request.form:
+        manipulation.addUserToEvent(request.form['join'], session['user'])
+        #creating an event
+    else:
+        name = request.form['name']
+        creator = session['user']
+        location = request.form['location']
+        date = request.form['date']
+        
+        image = request.files['image']
+        if image.filename == "":
+            return render_template("events.html", message = "You should add an image to showcase your event!")
+        
+        if image and allowed_file(image.filename):
+            manipulation.addEvent(name, creator, location, date, image)
+            
+            return redirect(url_for("home"))
+            #go to lgin/signup / landing page
         else:
             return render_template("index.html")
 
-@app.route("/verify/<link>", methods=["POST"])
+@app.route("/verify/<link>", methods=["GET", "POST"])
 def verify(link):
     users = db.users.find({})
     for user in users:
         if user['verificationLink'] == link:
             user['verified'] = True
-            return render_template("index.html", message = "Your account has been verified.")
-    return render_template("index.html", message = "Invalid verification link.")
-'''
+            return redirect(url_for("home", message = "Your account has been verified."))
+    return redirect(url_for("home", message = "Invalid verification link."))
+
 
 
 @app.route('/event/<eventid>')
@@ -228,7 +232,7 @@ def eventPage(eventid):
         else:
             return render_template("event.html", event = event, image = eventImage)
     else:
-        return redirect(url_for("/"))
+        return redirect(url_for("home"))
 
     
 @app.route('/leave/<eventid>')
@@ -237,7 +241,7 @@ def leaveEvent(eventid):
     if event and session['user']:
         event['users'].remove(session['user'])
     else:
-        return redirect(url_for("/"))
+        return redirect(url_for("home"))
 
     
 @app.route("/control/<eventid>")

@@ -1,6 +1,8 @@
 from pymongo import MongoClient
 import gridfs
 import hashlib
+import string
+import random
 
 #database
 connection = MongoClient("127.0.0.1")
@@ -47,7 +49,7 @@ def addUser(email, password):
             {
                 'name': '',
                 'email': email,
-                'password': hashlib.sha256(text).hexdigest(),
+                'password': hashlib.sha256(password).hexdigest(),
                 'images': [],
                 'events': [],
                 'eventsCreated': [],
@@ -56,8 +58,7 @@ def addUser(email, password):
                 'setup': False
             }
         )
-        sendVerificationEmail(email, link)
-        return True
+        return link
     else:
         return False
 
@@ -112,7 +113,7 @@ def authenticateUser(email, password):
     if not(check):
         return (False, "User doesn't exist.")
     else:
-        if hashlib.sha256(text).hexdigest() == getUser(email)['password']:
+        if hashlib.sha256(password).hexdigest() == getUser(email)['password']:
             return (True, "")
         else:
             return (False, "Incorrect password.")
