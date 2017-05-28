@@ -1,0 +1,11 @@
+{% extends "template.html" %}
+{% block body %}
+<form action="upload" method="post" enctype="multipart/form-data">
+  <input type="file" name="file" id="upload">
+  <label for="upload" id="upload-label">Choose a file...</label>
+  <br>
+  <br>
+  <input type="text" name="name" id="name" placeholder="Name"></input>
+  <input type="submit" value="Upload">
+</form>
+{% endblock body %}
