@@ -6,13 +6,17 @@ client_id = secrets['client-id']
 client_secret = secrets['client-secret']
     
 #GITIGNORE THIS BOI
-app = ClarifaiApp(client_id, client_secret)
-
-app.inputs.create_image_from_url(url="https://samples.clarifai.com/dog1.jpeg", concepts=["cute dog"], not_concepts=["cute cat"])
+clar_app = ClarifaiApp(client_id, client_secret)
 
 
-def uploadPhoto():
-    pass
+
+model = None
+
+try:
+    model = clar_app.models.create(model_id="pets", concepts=["cute cat", "cute dog"])
+    
+def feed_image(filename):
+    clar_app.inputs.create_image_from_url(url=filename, concepts=[""], not_concepts=["cute cat"])
 
 '''
 gets two images

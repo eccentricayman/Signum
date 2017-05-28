@@ -91,7 +91,6 @@ def home():
         #go to lgin/signup
         else:
             return render_template("index.html")
-
         
 #@app.route('/event/<eventid>', methods=['POST'])
 def eventPage(eventid):
