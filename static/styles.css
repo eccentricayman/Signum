@@ -15,6 +15,16 @@ body {
 	font-size: 20px;
 }
 
+h2 {
+	text-align: center;
+	color: #EFEFEF;
+	font-size: 20px;
+}
+
+.six.columns {
+	
+}
+
 .heading {
 	color: #FFFFFF;
     display: block;

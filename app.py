@@ -74,7 +74,7 @@ def sendVerificationEmail(email, verificationLink):
 def home():
     #session.clear()
     if 'user' in session:
-        return render_template("events.html", events = manipulation.getUserEvents(session['user']))
+        return render_template("events.html", createdEvents = manipulation.getUserEvents(session['user']), joinedEvents = manipulation.getUsersEvents(session['user']))
     else:
         if request.method == "POST":
             if "login" in request.form:

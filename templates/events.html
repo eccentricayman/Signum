@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Events</title>
+		
+		<!-- skeleton css framework  -->
+		<link
+			rel="stylesheet"
+			type="text/css"
+			href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"
+			media="none"
+			onload="if(media!='all')media='all'">
+
+		<!-- font awesome -->
+		<link
+			rel="stylesheet"
+			type="text/css"
+			href="static/font-awesome.min.css"
+			media="none"
+			onload="if(media!='all')media='all'">
+
+		<!-- google fonts -->
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css?family=Raleway:300,400,700"
+			media="none"
+			onload="if(media!='all')media='all'">
+		
+		<!-- custom styles -->
+		<link
+			rel="stylesheet"
+			type="text/css"
+			href="static/styles.css"
+			media="none"
+			onload="if(media!='all')media='all'">
+	</head>
+
+	<body>
+		<h1 class="heading">Events</h1>
+		<br>
+		<div class="row">
+			<div class="six columns joinedevents">
+				<h2>Joined Events</h2>
+				{% for event in joinedEvents %}
+					
+				{% endfor %}
+			</div>
+			<div class="six columns myevents">
+				<h2>My Events</h2>
+				{% for event in createdEvents %}
+					
+				{% endfor %}
+			</div>
+		</div>
+	</body>
+</html>

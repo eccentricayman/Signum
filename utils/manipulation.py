@@ -131,6 +131,7 @@ def getUserEvents(email):
     retEvents = []
     for event in events:
         retEvents.append(getEvent(event))
+        retEvents[-1]['image'] = getEventImage(retEvents[-1]['image'])
     return retEvents
 
 #gets the users events attending
