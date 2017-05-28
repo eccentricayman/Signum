@@ -4,7 +4,8 @@ from threading import Thread
 from flask import Flask, render_template, redirect, url_for, send_from_directory, request, session, flash
 from flask_mail import Mail, Message
 from werkzeug.utils import secure_filename
-from utils import secrets, manipulation
+from utils import secrets, manipulation, recognition
+from pprint import pprint
 
 app = Flask(__name__)
 
@@ -125,6 +126,11 @@ def home():
             return render_template("index.html")
         
 
+@app.route('/test')
+def test():
+    return render_template("upload.html")
+
+        
 # Route that will process the file upload
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -134,7 +140,7 @@ def upload():
     if f and allowed_file(f.filename):
         # Make the filename safe, remove unsupported chars
         filename = secure_filename(f.filename)
-        # Move the file form the temporal folder to
+        # Movethe file form the temporal folder to
         # the upload folder we setup
         path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         f.save(path)
@@ -181,7 +187,11 @@ def upload_predict():
             # the upload folder we setup
             prediction = recognition.getPrediction(path)
             os.remove(path)
-            return str(prediction)
+            data = prediction["outputs"][0]["data"]["concepts"]
+            s = ""
+            for point in data:
+                s += point["name"] + ": " + str(point["value"] * 100) + "% confidence\n"
+            return render_template("kek.html", message=s)
         else:
             return "not a valid face pic!!!"
     else:
