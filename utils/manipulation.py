@@ -78,13 +78,17 @@ def updateUserMainImage(email, image):
     else:
         return False
 
-def setupUser(email, name, mainImage):
+def updateQuestion(email, question, answer):
+    user = getUser(email)
+    
+def setupUser(email, name, mainImage, question, answer):
     user = getUser(email)
     if user['setup']:
         return False
     else:
         updateUserName(email, name)
         updateUserMainImage(email, mainImage)
+        updateQuestion(email, question, answer)
         user['setup'] = True
         return True
 
@@ -216,7 +220,7 @@ def addUserToEvent(eventID, email):
 def removeUserFromEvent(eventID, email):
     event = getEvent(eventID)
     event['users'].remove(email)
-    
+
 #images
 def addImage(image):
     return fs.put(image)

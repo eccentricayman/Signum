@@ -99,13 +99,14 @@ def home():
             elif request.form['submit'] == "setup":
                 email = session['user']
                 name = request.form['name']
-                manipulation.updateUserName(email, name)
+                question = request.form['question']
+                answer = request.form['answer']
                 
                 image = request.files['image']
                 if image.filename == "":
                     return render_template("setup.html", message = "You should upload an image!")
                 if image and allowed_file(image.filename):
-                    manipulation.addUserImage(email, image, True)
+                    manipulation.setupUser(email, name, image, question, answer)
             #here is events page
             else:
                 # joining a event
@@ -162,6 +163,7 @@ def leaveEvent(eventid):
 @app.route("/control/<eventid>")
 def controlEvent(eventid):
     event = manipulation.getEvent(eventid)
+    
     
 if __name__ == "__main__":
     app.debug = True

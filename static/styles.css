@@ -1,0 +1,69 @@
+body {
+    margin: 0;
+    padding: 0;
+    color: #404040;
+	background: #ff5f6d; /* fallback for old browsers */
+	background: -webkit-linear-gradient(to right, #ff5f6d, #ffc371); /* Chrome 10-25, Safari 5.1-6 */
+	background: linear-gradient(to right, #ff5f6d, #ffc371); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    font-family: 'Avenir', sans-serif;
+    font-weight: normal;
+}
+
+.heading-container {
+	text-align: center;
+	color: #EFEFEF;
+	font-size: 20px;
+}
+
+.heading {
+	color: #FFFFFF;
+    display: block;
+    font-weight: 300;
+    text-align: center;
+    margin: 2.5%;
+	padding: 0;
+}
+
+.card {
+	box-shadow: 0 15px 20px rgba(0, 0, 0, 0.3);
+	margin: 0 auto;
+	width: 40%;
+	background-color: transparent;
+	border: 2.5px solid white;
+	border-radius: 10px;
+	color: #404040;
+	height: auto;
+}
+
+.auth {
+	text-align: center;
+	padding-top: 5%;
+	padding-bottom: 5%;
+	padding-left: 2.5%;
+	padding-right: 2.5%;
+	margin: 0;
+}
+
+.auth > input {
+	font-size: 24px;
+	text-align: center;
+}
+
+.auth > input[type="submit"] {
+	width: 40%;
+	background-color: white;
+	border: 1px solid transparent;
+	border-radius: 25px;
+	font-family: Avenir, sans-serif;
+	font-size: 16px;
+	transition: 0.1s all;
+}
+
+.auth > input[type="submit"]:hover {
+	transition: 0.1s all;
+	box-shadow: 0 5px 4px rgba(0, 0, 0, 0.3);
+}
+
+#signup {
+	display: none;
+}
