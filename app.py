@@ -87,7 +87,7 @@ def home():
                     return render_template("index.html", message = check[1])
             #my dude trynna signup?
             else:
-                
+                pass
         #go to lgin/signup
         else:
             return render_template("index.html")
