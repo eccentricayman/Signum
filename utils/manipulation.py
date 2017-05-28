@@ -50,6 +50,8 @@ def addUser(email, password):
                 'name': '',
                 'email': email,
                 'password': hashlib.sha256(password).hexdigest(),
+                'question': '',
+                'answer': '',
                 'images': [],
                 'events': [],
                 'eventsCreated': [],
@@ -81,6 +83,8 @@ def updateUserMainImage(email, image):
 
 def updateQuestion(email, question, answer):
     user = getUser(email)
+    user['question'] = question
+    user['answer'] = answer
     
 def setupUser(email, name, mainImage, question, answer):
     user = getUser(email)
@@ -127,6 +131,7 @@ def getUserEvents(email):
     retEvents = []
     for event in events:
         retEvents.append(getEvent(event))
+        retEvents[-1]['image'] = getEventImage(retEvents[-1]['image'])
     return retEvents
 
 #gets the users events attending

@@ -1,64 +1,86 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Account Setup</title>
-    
-    <!-- skeleton css framework  -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"
-      media="none"
-      onload="if(media!='all')media='all'">
+	<head>
+		<title>Account Setup</title>
+		
+		<!-- skeleton css framework  -->
+		<link
+			rel="stylesheet"
+			type="text/css"
+			href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"
+			media="none"
+			onload="if(media!='all')media='all'">
 
-    <!-- font awesome -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="static/font-awesome.min.css"
-      media="none"
-      onload="if(media!='all')media='all'">
+		<!-- font awesome -->
+		<link
+			rel="stylesheet"
+			type="text/css"
+			href="static/font-awesome.min.css"
+			media="none"
+			onload="if(media!='all')media='all'">
 
-    <!-- google fonts -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Raleway:300,400,700"
-      media="none"
-      onload="if(media!='all')media='all'">
+		<!-- google fonts -->
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css?family=Raleway:300,400,700"
+			media="none"
+			onload="if(media!='all')media='all'">
+		
+		<!-- custom styles -->
+		<link
+			rel="stylesheet"
+			type="text/css"
+			href="static/styles.css"
+			media="none"
+			onload="if(media!='all')media='all'">
+	</head>
+	
+	<body>
+		<div class="heading-container">
+			<h1 class="heading" style="margin-top: 5%;">Account Setup</h1>
+		</div>
+		<p class="message">{{message}}</p>
+		{% if request.args.get("message") %}
+			<p class="message">{{request.args.get("message")}}</p>
+		{% endif %}
+		<br>
+		<div class="card">
+			<form class="auth" method="post">
+				<br>
+				<input type="text" name="name" placeholder="Name" />
+				<br>
+				<p>Security Question</p>
+				<input type="text" name="question" placeholder="Question" />
+				<br>
+				<input type="text" name="answer" placeholder="Answer" />
+				<br>
+				<p>Image</p>
+				<img id="uploaded-image" src="#" style="width: 75% ; height: auto ; display: none" />
+				<input type="file" id="image-input" name="image" style="font-size: 10px ; color: white"/>
+				<br>
+				<input type="submit" name="setup" value="Submit" />
+			</form>
+		</div>
 
-    <!-- custom styles -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="static/styles.css"
-      media="none"
-      onload="if(media!='all')media='all'">
-  </head>
-  <body>
-    <div class="heading-container">
-      <h1 class="heading" style="margin-top: 5%;">Welcome to Signum</h1>
-      <p>Event sign-in, face to face</p>
-    </div>
-    <p class="message">{{message}}</p>
-    {% if request.args.get("message") %}
-    <p class="message">{{request.args.get("message")}}</p>
-    {% endif %}
-    <br>
-    <div class="card">
-      <form class="auth" method="post">
-	<br>
-	<input type="text" name="email" placeholder="Email" />
-	<br>
-	<input type="password" name="password" placeholder="Password" />
-	<br><br>
-	<input type="submit" name="register" value="Register" />
-	<br>
-	<input type="submit" name="login" value="Login" />
-      </form>
-    </div>
-
-    <script type="text/javascript">
-      
-    </script>
-  </body>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script type="text/javascript">
+		 function readURL(input) {
+			 
+			 if (input.files && input.files[0]) {
+				 var reader = new FileReader();
+				 
+				 reader.onload = function (e) {
+					 $('#uploaded-image').attr('src', e.target.result);
+					 $('#uploaded-image').css("display", "block");
+				 }
+				 
+				 reader.readAsDataURL(input.files[0]);
+			 }
+		 }
+		 
+		 $("#image-input").change(function(){
+			 readURL(this);
+		 });
+		</script>
+	</body>
 </html>
