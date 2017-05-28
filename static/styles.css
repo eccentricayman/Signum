@@ -50,6 +50,12 @@ body {
 	margin: 0;
 }
 
+.auth > p {
+	color: white;
+	width: 75%;
+	margin: 0 auto;
+}
+
 .auth > input {
 	font-size: 24px;
 	text-align: center;

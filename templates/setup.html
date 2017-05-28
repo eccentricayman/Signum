@@ -35,9 +35,8 @@
             onload="if(media!='all')media='all'">
 	</head>
 	<body>
-				<div class="heading-container">
-			<h1 class="heading" style="margin-top: 5%;">Welcome to Signum</h1>
-			<p>Event sign-in, face to face</p>
+		<div class="heading-container">
+			<h1 class="heading" style="margin-top: 5%;">Account Setup</h1>
 		</div>
 		<p class="message">{{message}}</p>
 		{% if request.args.get("message") %}
@@ -47,18 +46,40 @@
 		<div class="card">
 			<form class="auth" method="post">
 				<br>
-				<input type="text" name="email" placeholder="Email" />
+				<input type="text" name="name" placeholder="Name" />
 				<br>
-				<input type="password" name="password" placeholder="Password" />
-				<br><br>
-				<input type="submit" name="register" value="Register" />
+				<p>Security Question</p>
+				<input type="text" name="question" placeholder="Question" />
 				<br>
-				<input type="submit" name="login" value="Login" />
+				<input type="text" name="answer" placeholder="Answer" />
+				<br>
+				<p>Image</p>
+				<img id="uploaded-image" src="#" style="width: 75% ; height: auto ; display: none" />
+				<input type="file" id="image-input" name="image" style="font-size: 10px ; color: white"/>
+				<br>
+				<input type="submit" name="setup" value="Submit" />
 			</form>
 		</div>
 
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script type="text/javascript">
+		 function readURL(input) {
+			 
+			 if (input.files && input.files[0]) {
+				 var reader = new FileReader();
+				 
+				 reader.onload = function (e) {
+					 $('#uploaded-image').attr('src', e.target.result);
+					 $('#uploaded-image').css("display", "block");
+				 }
+				 
+				 reader.readAsDataURL(input.files[0]);
+			 }
+		 }
 		 
+		 $("#image-input").change(function(){
+			 readURL(this);
+		 });
 		</script>
 	</body>
 </html>

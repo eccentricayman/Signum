@@ -66,13 +66,13 @@ def sendVerificationEmail(email, verificationLink):
     <br><br>
     <a href="{0}" style="padding: 1.5% ; text-decoration: none ; color: #404040; border: 1px solid black ; text-transform: uppercase ; font-weight: 500 ; font-family: Arial ; padding-left: 10% ; padding-right: 10%">Verify Email</a>
 </center>
-    '''.format("http://127.0.0.1/verify/" + verificationLink)
+    '''.format("http://signumsystems.tech/verify/" + verificationLink)
     sendEmailAsync(app, message)
 
 
 @app.route("/", methods = ["GET", "POST"])
 def home():
-    print request.form
+    #session.clear()
     if 'user' in session:
         return render_template("events.html", events = manipulation.getUserEvents(session['user']))
     else:
@@ -247,8 +247,7 @@ def leaveEvent(eventid):
 @app.route("/control/<eventid>")
 def controlEvent(eventid):
     event = manipulation.getEvent(eventid)
-    
-    
+
 if __name__ == "__main__":
     app.debug = True
     app.run()
