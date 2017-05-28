@@ -120,8 +120,13 @@ def verify(link):
     return render_template("index.html", message = "Invalid verification link.")
 
 #@app.route('/event/<eventid>', methods=['POST'])
-#def eventPage(eventid):
-#    event = getEvent()
+def eventPage(eventid):
+    event = getEvent(eventid)
+    eventImage = getEventID(eventid)
+    if event:
+        return render_template("event.html", event = event, image = eventImage)
+    else:
+        return redirect(url_for("/", message = "Invalid event page."))
     
 if __name__ == "__main__":
     app.debug = True
