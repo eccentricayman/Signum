@@ -19,7 +19,7 @@ app.config['MAIL_USERNAME'] = secrets['email']
 app.config['MAIL_PASSWORD'] = secrets['email-password']
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_DEFAULT_SENDER'] = ("Signum", secrets['email'])
+app.config['MAIL_DEFAULT_SENDER'] = ("Signum Event Systems", secrets['email'])
 mail = Mail(app)
 
 #database stuff
